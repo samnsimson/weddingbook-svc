@@ -2,7 +2,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { CreateDateColumn, UpdateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType()
-export class BaseEntity {
+export class EntityBase {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: string;

@@ -16,6 +16,10 @@
     "@app/entities": "<rootDir>/../libs/entities/src",
     "@app/entities/(.*)": "<rootDir>/../libs/entities/src/$1",
     "@app/exception-filters": "<rootDir>/../libs/exception-filters/src",
-    "@app/exception-filters/(.*)": "<rootDir>/../libs/exception-filters/src/$1"
+    "@app/exception-filters/(.*)": "<rootDir>/../libs/exception-filters/src/$1",
+    "@app/guards": "<rootDir>/../libs/guards/src",
+    "@app/guards/(.*)": "<rootDir>/../libs/guards/src/$1",
+    "@app/types": "<rootDir>/../libs/types/src",
+    "@app/types/(.*)": "<rootDir>/../libs/types/src/$1"
   }
 }

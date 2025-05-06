@@ -5,6 +5,11 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
+import { WeddingModule } from './wedding/wedding.module';
+import { GuestModule } from './guest/guest.module';
+import { MediaModule } from './media/media.module';
+import { AlbumModule } from './album/album.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +21,11 @@ import { UserModule } from './user/user.module';
       graphiql: true,
     }),
     UserModule,
+    WeddingModule,
+    GuestModule,
+    MediaModule,
+    AlbumModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

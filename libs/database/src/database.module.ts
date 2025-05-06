@@ -1,7 +1,8 @@
+import { Album, Comment, Guest, Media, MediaReaction, User, Wedding } from '@app/entities';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { join } from 'path';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Module({
   imports: [
@@ -14,9 +15,10 @@ import { join } from 'path';
         username: configService.get<string>('DB_USERNAME', 'admin'),
         password: configService.get<string>('DB_PASSWORD', 'password'),
         database: configService.get<string>('DB_NAME', 'db'),
-        entities: [join(__dirname, '**/*.entity{.ts,.js}')],
-        synchronize: true,
+        entities: [User, Album, Guest, Comment, MediaReaction, Media, Wedding],
+        namingStrategy: new SnakeNamingStrategy(),
         autoLoadEntities: true,
+        synchronize: true,
       }),
     }),
   ],

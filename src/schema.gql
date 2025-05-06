@@ -2,17 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
+type Album {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
-  username: String!
-  email: String!
-  phone: String!
-  isEmailVerified: Boolean!
-  isPhoneVerified: Boolean!
-  isActive: Boolean!
+  title: String!
+  description: String
+  wedding: Wedding!
+  createdBy: User!
+  mediaItems: [Media!]!
 }
 
 """
@@ -20,9 +19,98 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type MediaReaction {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  reactionType: String!
+  user: User!
+  mediaItem: Media!
+}
+
+type Comment {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  content: String!
+  author: User!
+  mediaItem: Media!
+}
+
+type Media {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  url: String!
+  mediaType: String!
+  caption: String
+  uploadedBy: User!
+  wedding: Wedding!
+  album: Album
+  reactions: [MediaReaction!]!
+  comments: [Comment!]!
+}
+
+type Wedding {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  code: Int!
+  title: String!
+  description: String
+  date: DateTime!
+  createdBy: User!
+  guests: [Guest!]!
+  mediaItems: [Media!]!
+  albums: [Album!]!
+}
+
+type Guest {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  user: User!
+  wedding: Wedding!
+  role: String!
+  joinedAt: DateTime!
+}
+
+type User {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  username: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+  phone: String!
+  isEmailVerified: Boolean!
+  isPhoneVerified: Boolean!
+  isActive: Boolean!
+  guestConnections: [Guest!]!
+  fullName: String!
+}
+
+type LoginEntity {
+  authenticated: Boolean!
+  tokenType: String!
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   users: [User!]!
   user(findUserInput: FindUserInput!): User!
+  wedding(id: Int!): Wedding!
+  guest(id: Int!): Guest!
+  media(id: Int!): Media!
+  album(id: Int!): Album!
 }
 
 input FindUserInput {
@@ -33,10 +121,26 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
+  createWedding(createWeddingInput: CreateWeddingInput!): Wedding!
+  updateWedding(updateWeddingInput: UpdateWeddingInput!): Wedding!
+  removeWedding(id: Int!): Wedding!
+  createGuest(createGuestInput: CreateGuestInput!): Guest!
+  updateGuest(updateGuestInput: UpdateGuestInput!): Guest!
+  removeGuest(id: Int!): Guest!
+  createMedia(createMediaInput: CreateMediaInput!): Media!
+  updateMedia(updateMediaInput: UpdateMediaInput!): Media!
+  removeMedia(id: Int!): Media!
+  createAlbum(createAlbumInput: CreateAlbumInput!): Album!
+  updateAlbum(updateAlbumInput: UpdateAlbumInput!): Album!
+  removeAlbum(id: Int!): Album!
+  login(loginInput: LoginInput!): LoginEntity!
+  signup(signupInput: SignupInput!): User!
 }
 
 input CreateUserInput {
   username: String!
+  firstName: String!
+  lastName: String!
   email: String!
   phone: String!
   password: String!
@@ -44,8 +148,68 @@ input CreateUserInput {
 
 input UpdateUserInput {
   username: String
+  firstName: String
+  lastName: String
   email: String
   phone: String
   password: String
   id: String!
+}
+
+input CreateWeddingInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateWeddingInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateGuestInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateGuestInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateMediaInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateMediaInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateAlbumInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateAlbumInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+input SignupInput {
+  username: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String!
+  password: String!
 }
