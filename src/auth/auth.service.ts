@@ -23,7 +23,6 @@ export class AuthService {
     try {
       this.logger.log(`Logging in user: ${JSON.stringify({ username })}`);
       const user = await this.userService.findOneBy({ where: [{ username }, { email: username }] });
-      this.logger.log(`User: ${JSON.stringify({ id: user.id })}`);
       const isPasswordValid = await compare(password, user.password);
       if (!isPasswordValid) throw new UnauthorizedException('Wrong password');
       const { id, email } = this.verifyUserStatus(user);
