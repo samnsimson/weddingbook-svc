@@ -13,13 +13,19 @@
   "moduleNameMapper": {
     "@app/database": "<rootDir>/../libs/database/src",
     "@app/database/(.*)": "<rootDir>/../libs/database/src/$1",
+    "@app/decorators": "<rootDir>/../libs/decorators/src",
+    "@app/decorators/(.*)": "<rootDir>/../libs/decorators/src/$1",
     "@app/entities": "<rootDir>/../libs/entities/src",
     "@app/entities/(.*)": "<rootDir>/../libs/entities/src/$1",
     "@app/exception-filters": "<rootDir>/../libs/exception-filters/src",
     "@app/exception-filters/(.*)": "<rootDir>/../libs/exception-filters/src/$1",
     "@app/guards": "<rootDir>/../libs/guards/src",
     "@app/guards/(.*)": "<rootDir>/../libs/guards/src/$1",
+    "@app/middlewares": "<rootDir>/../libs/middlewares/src",
+    "@app/middlewares/(.*)": "<rootDir>/../libs/middlewares/src/$1",
     "@app/types": "<rootDir>/../libs/types/src",
-    "@app/types/(.*)": "<rootDir>/../libs/types/src/$1"
+    "@app/types/(.*)": "<rootDir>/../libs/types/src/$1",
+    "@app/utils": "<rootDir>/../libs/utils/src",
+    "@app/utils/(.*)": "<rootDir>/../libs/utils/src/$1"
   }
 }

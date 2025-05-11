@@ -1,6 +1,6 @@
 import { DatabaseModule } from '@app/database';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
@@ -10,6 +10,7 @@ import { GuestModule } from './guest/guest.module';
 import { MediaModule } from './media/media.module';
 import { AlbumModule } from './album/album.module';
 import { AuthModule } from './auth/auth.module';
+import { RequestProcessorMiddleware } from '@app/middlewares';
 
 @Module({
   imports: [
@@ -30,4 +31,8 @@ import { AuthModule } from './auth/auth.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestProcessorMiddleware).forRoutes('*');
+  }
+}

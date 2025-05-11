@@ -1,7 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, OneToMany, Unique } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, Unique } from 'typeorm';
 import { EntityBase } from './base.entity';
 import { Guest } from './guest.entity';
+import { Wedding } from './wedding.entity';
 
 @Entity()
 @ObjectType()
@@ -47,4 +48,8 @@ export class User extends EntityBase {
   @OneToMany(() => Guest, (guest) => guest.user)
   @Field(() => [Guest])
   guestConnections: Guest[];
+
+  @OneToOne(() => Wedding, (wedding) => wedding.owner, { nullable: true })
+  @Field(() => Wedding)
+  wedding: Wedding;
 }

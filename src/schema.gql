@@ -10,7 +10,7 @@ type Album {
   title: String!
   description: String
   wedding: Wedding!
-  createdBy: User!
+  owner: User!
   mediaItems: [Media!]!
 }
 
@@ -63,7 +63,11 @@ type Wedding {
   title: String!
   description: String
   date: DateTime!
-  createdBy: User!
+  brideName: String
+  groomName: String
+  brideImageUrl: String
+  groomImageUrl: String
+  owner: User!
   guests: [Guest!]!
   mediaItems: [Media!]!
   albums: [Album!]!
@@ -94,6 +98,7 @@ type User {
   isPhoneVerified: Boolean!
   isActive: Boolean!
   guestConnections: [Guest!]!
+  wedding: Wedding!
   fullName: String!
 }
 
@@ -107,6 +112,7 @@ type LoginEntity {
 type Query {
   users: [User!]!
   user(findUserInput: FindUserInput!): User!
+  weddings: [Wedding!]!
   wedding(id: Int!): Wedding!
   guest(id: Int!): Guest!
   media(id: Int!): Media!
@@ -157,13 +163,15 @@ input UpdateUserInput {
 }
 
 input CreateWeddingInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  title: String!
+  description: String
+  date: String!
 }
 
 input UpdateWeddingInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  title: String
+  description: String
+  date: String
   id: Int!
 }
 

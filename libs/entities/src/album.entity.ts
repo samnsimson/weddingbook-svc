@@ -22,7 +22,7 @@ export class Album extends EntityBase {
 
   @ManyToOne(() => User)
   @Field(() => User)
-  createdBy: User;
+  owner: User;
 
   @OneToMany(() => Media, (media) => media.album)
   @Field(() => [Media])

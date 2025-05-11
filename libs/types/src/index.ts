@@ -4,3 +4,9 @@ export type JwtPayload = {
   email: string;
   role: string;
 };
+
+export enum ClientType {
+  APP = 'App',
+  WEB = 'Web',
+  UNKNOWN = 'Unknown',
+}

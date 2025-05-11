@@ -24,6 +24,12 @@
       "@app/database/*": [
         "libs/database/src/*"
       ],
+      "@app/decorators": [
+        "libs/decorators/src"
+      ],
+      "@app/decorators/*": [
+        "libs/decorators/src/*"
+      ],
       "@app/entities": [
         "libs/entities/src"
       ],
@@ -42,11 +48,23 @@
       "@app/guards/*": [
         "libs/guards/src/*"
       ],
+      "@app/middlewares": [
+        "libs/middlewares/src"
+      ],
+      "@app/middlewares/*": [
+        "libs/middlewares/src/*"
+      ],
       "@app/types": [
         "libs/types/src"
       ],
       "@app/types/*": [
         "libs/types/src/*"
+      ],
+      "@app/utils": [
+        "libs/utils/src"
+      ],
+      "@app/utils/*": [
+        "libs/utils/src/*"
       ]
     }
   }

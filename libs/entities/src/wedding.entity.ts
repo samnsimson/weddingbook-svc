@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, OneToMany, OneToOne, Unique } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, Unique } from 'typeorm';
 import { EntityBase } from './base.entity';
 import { User } from './user.entity';
 import { Guest } from './guest.entity';
@@ -26,19 +26,36 @@ export class Wedding extends EntityBase {
   @Field()
   date: Date;
 
-  @OneToOne(() => User)
+  @Column({ nullable: true, default: null })
+  @Field({ nullable: true })
+  brideName: string;
+
+  @Column({ nullable: true, default: null })
+  @Field({ nullable: true })
+  groomName: string;
+
+  @Column({ type: 'text', nullable: true, default: null })
+  @Field({ nullable: true })
+  brideImageUrl: string;
+
+  @Column({ type: 'text', nullable: true, default: null })
+  @Field({ nullable: true })
+  groomImageUrl: string;
+
+  @OneToOne(() => User, (user) => user.wedding, { eager: true })
+  @JoinColumn()
   @Field(() => User)
-  createdBy: User;
+  owner: User;
 
   @OneToMany(() => Guest, (guest) => guest.wedding)
-  @Field(() => [Guest])
+  @Field(() => [Guest], { defaultValue: [] })
   guests: Guest[];
 
   @OneToMany(() => Media, (media) => media.wedding)
-  @Field(() => [Media])
+  @Field(() => [Media], { defaultValue: [] })
   mediaItems: Media[];
 
   @OneToMany(() => Album, (album) => album.wedding)
-  @Field(() => [Album])
+  @Field(() => [Album], { defaultValue: [] })
   albums: Album[];
 }

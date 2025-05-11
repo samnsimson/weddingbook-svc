@@ -16,6 +16,15 @@
         "tsConfigPath": "libs/database/tsconfig.lib.json"
       }
     },
+    "decorators": {
+      "type": "library",
+      "root": "libs/decorators",
+      "entryFile": "index",
+      "sourceRoot": "libs/decorators/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/decorators/tsconfig.lib.json"
+      }
+    },
     "entities": {
       "type": "library",
       "root": "libs/entities",
@@ -43,6 +52,15 @@
         "tsConfigPath": "libs/guards/tsconfig.lib.json"
       }
     },
+    "middlewares": {
+      "type": "library",
+      "root": "libs/middlewares",
+      "entryFile": "index",
+      "sourceRoot": "libs/middlewares/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/middlewares/tsconfig.lib.json"
+      }
+    },
     "types": {
       "type": "library",
       "root": "libs/types",
@@ -50,6 +68,15 @@
       "sourceRoot": "libs/types/src",
       "compilerOptions": {
         "tsConfigPath": "libs/types/tsconfig.lib.json"
+      }
+    },
+    "utils": {
+      "type": "library",
+      "root": "libs/utils",
+      "entryFile": "index",
+      "sourceRoot": "libs/utils/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/utils/tsconfig.lib.json"
       }
     }
   }
