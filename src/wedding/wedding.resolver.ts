@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { WeddingService } from './wedding.service';
 import { CreateWeddingInput } from './dto/create-wedding.input';
 import { UpdateWeddingInput } from './dto/update-wedding.input';
@@ -6,6 +6,8 @@ import { User, Wedding } from '@app/entities';
 import { CurrentUser } from '@app/decorators';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@app/guards';
+import { PaginatedWedding } from './dto/paginated-wedding.dto';
+import { PaginationInput } from '@app/dto';
 
 @Resolver(() => Wedding)
 @UseGuards(AuthGuard)
@@ -17,13 +19,13 @@ export class WeddingResolver {
     return this.weddingService.create(createWeddingInput, owner);
   }
 
-  @Query(() => [Wedding], { name: 'weddings' })
-  findAll() {
-    return this.weddingService.findAll();
+  @Query(() => PaginatedWedding, { name: 'weddings' })
+  findAll(@Args('paginationInput', { nullable: true, defaultValue: { limit: 10, page: 1 } }) paginationInput: PaginationInput) {
+    return this.weddingService.findAll(paginationInput);
   }
 
   @Query(() => Wedding, { name: 'wedding' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id') id: string) {
     return this.weddingService.findOne(id);
   }
 
@@ -33,7 +35,7 @@ export class WeddingResolver {
   }
 
   @Mutation(() => Wedding)
-  removeWedding(@Args('id', { type: () => Int }) id: number) {
+  removeWedding(@Args('id') id: string) {
     return this.weddingService.remove(id);
   }
 }

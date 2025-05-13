@@ -102,6 +102,13 @@ type User {
   fullName: String!
 }
 
+type PaginatedWedding {
+  total: Int!
+  limit: Int!
+  page: Int!
+  data: [Wedding!]!
+}
+
 type LoginEntity {
   authenticated: Boolean!
   tokenType: String!
@@ -112,8 +119,8 @@ type LoginEntity {
 type Query {
   users: [User!]!
   user(findUserInput: FindUserInput!): User!
-  weddings: [Wedding!]!
-  wedding(id: Int!): Wedding!
+  weddings(paginationInput: PaginationInput = {limit: 10, page: 1}): PaginatedWedding!
+  wedding(id: String!): Wedding!
   guest(id: Int!): Guest!
   media(id: Int!): Media!
   album(id: Int!): Album!
@@ -123,13 +130,18 @@ input FindUserInput {
   id: String!
 }
 
+input PaginationInput {
+  limit: Int! = 10
+  page: Int! = 1
+}
+
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
   createWedding(createWeddingInput: CreateWeddingInput!): Wedding!
   updateWedding(updateWeddingInput: UpdateWeddingInput!): Wedding!
-  removeWedding(id: Int!): Wedding!
+  removeWedding(id: String!): Wedding!
   createGuest(createGuestInput: CreateGuestInput!): Guest!
   updateGuest(updateGuestInput: UpdateGuestInput!): Guest!
   removeGuest(id: Int!): Guest!
@@ -172,7 +184,11 @@ input UpdateWeddingInput {
   title: String
   description: String
   date: String
-  id: Int!
+  id: String!
+  brideName: String!
+  groomName: String!
+  brideImageUrl: String!
+  groomImageUrl: String!
 }
 
 input CreateGuestInput {

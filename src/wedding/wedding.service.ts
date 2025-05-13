@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWeddingInput } from './dto/create-wedding.input';
 import { UpdateWeddingInput } from './dto/update-wedding.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, Wedding } from '@app/entities';
-import { FindManyOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { generateCode } from '@app/utils';
+import { PaginatedWedding } from './dto/paginated-wedding.dto';
+import { PaginationInput } from '@app/dto';
 
 @Injectable()
 export class WeddingService {
@@ -16,19 +18,27 @@ export class WeddingService {
     return await this.weddingRepository.save(wedding);
   }
 
-  async findAll(option: FindManyOptions<Wedding> | undefined = undefined) {
-    return await this.weddingRepository.find(option);
+  async findAll({ limit = 10, page = 1 }: PaginationInput): Promise<PaginatedWedding> {
+    const skip = limit * (page - 1);
+    const [data, total] = await this.weddingRepository.findAndCount({ take: limit, skip });
+    return { limit, page, total, data };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} wedding`;
+  async findOne(id: string) {
+    const wedding = await this.weddingRepository.findOneBy({ id });
+    if (!wedding) throw new NotFoundException('Wedding not found');
+    return wedding;
   }
 
-  update(id: number, updateWeddingInput: UpdateWeddingInput) {
-    return `This action updates a #${id} wedding`;
+  async update(id: string, updateWeddingInput: UpdateWeddingInput) {
+    const wedding = await this.findOne(id);
+    Object.assign(wedding, updateWeddingInput);
+    return await this.weddingRepository.save(wedding);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} wedding`;
+  async remove(id: string) {
+    const wedding = await this.findOne(id);
+    await this.weddingRepository.remove(wedding);
+    return wedding;
   }
 }

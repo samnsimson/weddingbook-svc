@@ -94,6 +94,7 @@
     "moduleNameMapper": {
       "^@app/database(|/.*)$": "<rootDir>/libs/database/src/$1",
       "^@app/decorators(|/.*)$": "<rootDir>/libs/decorators/src/$1",
+      "^@app/dto(|/.*)$": "<rootDir>/libs/dto/src/$1",
       "^@app/entities(|/.*)$": "<rootDir>/libs/entities/src/$1",
       "^@app/exception-filters(|/.*)$": "<rootDir>/libs/exception-filters/src/$1",
       "^@app/guards(|/.*)$": "<rootDir>/libs/guards/src/$1",
