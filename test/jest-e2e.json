@@ -11,6 +11,8 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
+    "@app/application-modules": "<rootDir>/../libs/application-modules/src",
+    "@app/application-modules/(.*)": "<rootDir>/../libs/application-modules/src/$1",
     "@app/database": "<rootDir>/../libs/database/src",
     "@app/database/(.*)": "<rootDir>/../libs/database/src/$1",
     "@app/decorators": "<rootDir>/../libs/decorators/src",

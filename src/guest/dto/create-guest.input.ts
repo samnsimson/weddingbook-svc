@@ -1,7 +1,12 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { Guest } from '@app/entities';
+import { Field, InputType, PickType } from '@nestjs/graphql';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 @InputType()
-export class CreateGuestInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+export class CreateGuestInput extends PickType(Guest, ['role']) {
+  @Field()
+  @IsString()
+  @IsUUID()
+  @IsNotEmpty()
+  weddingId: string;
 }

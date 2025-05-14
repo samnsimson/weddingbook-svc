@@ -10,3 +10,14 @@ export enum ClientType {
   WEB = 'Web',
   UNKNOWN = 'Unknown',
 }
+
+export enum ImageFor {
+  BRIDE = 'bride',
+  GROOM = 'groom',
+}
+
+export enum GuestRole {
+  ADMIN = 'ADMIN',
+  GUEST = 'GUEST',
+  PHOTOGRAPHER = 'PHOTOGRAPHER',
+}

@@ -47,8 +47,7 @@ export class Wedding extends EntityBase {
   @Field(() => User)
   owner: User;
 
-  @OneToMany(() => Guest, (guest) => guest.wedding)
-  @Field(() => [Guest], { defaultValue: [] })
+  @OneToMany(() => Guest, (guest) => guest.wedding, { eager: true })
   guests: Guest[];
 
   @OneToMany(() => Media, (media) => media.wedding)

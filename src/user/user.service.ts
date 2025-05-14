@@ -3,7 +3,7 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@app/entities';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 
 @Injectable()
@@ -18,6 +18,10 @@ export class UserService {
 
   async findAll() {
     return this.userRepository.find();
+  }
+
+  async findAllBy(option: FindManyOptions<User>) {
+    return this.userRepository.find(option);
   }
 
   async findOne(id: string) {

@@ -1,25 +1,31 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { GuestService } from './guest.service';
 import { CreateGuestInput } from './dto/create-guest.input';
 import { UpdateGuestInput } from './dto/update-guest.input';
-import { Guest } from '@app/entities';
+import { Guest, User } from '@app/entities';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@app/guards';
+import { CurrentUser } from '@app/decorators';
+import { PaginationInput } from '@app/dto';
+import { PaginatedGuest } from './dto/paginated-guest.dto';
 
 @Resolver(() => Guest)
+@UseGuards(AuthGuard)
 export class GuestResolver {
   constructor(private readonly guestService: GuestService) {}
 
   @Mutation(() => Guest)
-  createGuest(@Args('createGuestInput') createGuestInput: CreateGuestInput) {
-    return this.guestService.create(createGuestInput);
+  createGuest(@Args('createGuestInput') createGuestInput: CreateGuestInput, @CurrentUser() { id }: User) {
+    return this.guestService.create(createGuestInput, id);
   }
 
-  @Query(() => [Guest], { name: 'guest' })
-  findAll() {
-    return this.guestService.findAll();
+  @Query(() => PaginatedGuest, { name: 'guests' })
+  findAll(@Args('paginationInput') paginationInput: PaginationInput) {
+    return this.guestService.findAll(paginationInput);
   }
 
   @Query(() => Guest, { name: 'guest' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id') id: string) {
     return this.guestService.findOne(id);
   }
 
@@ -29,7 +35,7 @@ export class GuestResolver {
   }
 
   @Mutation(() => Guest)
-  removeGuest(@Args('id', { type: () => Int }) id: number) {
+  removeGuest(@Args('id') id: string) {
     return this.guestService.remove(id);
   }
 }

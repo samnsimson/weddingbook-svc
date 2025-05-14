@@ -68,9 +68,14 @@ type Wedding {
   brideImageUrl: String
   groomImageUrl: String
   owner: User!
-  guests: [Guest!]!
   mediaItems: [Media!]!
   albums: [Album!]!
+  guests(paginationInput: PaginationInput = {limit: 10, page: 1}): PaginatedWeddingGuests!
+}
+
+input PaginationInput {
+  limit: Int! = 10
+  page: Int! = 1
 }
 
 type Guest {
@@ -80,8 +85,13 @@ type Guest {
   deletedAt: DateTime
   user: User!
   wedding: Wedding!
-  role: String!
-  joinedAt: DateTime!
+  role: GuestRole!
+}
+
+enum GuestRole {
+  ADMIN
+  GUEST
+  PHOTOGRAPHER
 }
 
 type User {
@@ -109,6 +119,19 @@ type PaginatedWedding {
   data: [Wedding!]!
 }
 
+type PaginatedWeddingGuests {
+  total: Int!
+  limit: Int!
+  page: Int!
+  data: [User!]!
+}
+
+type PaginatedGuest {
+  total: Int!
+  limit: Int!
+  page: Int!
+}
+
 type LoginEntity {
   authenticated: Boolean!
   tokenType: String!
@@ -120,8 +143,9 @@ type Query {
   users: [User!]!
   user(findUserInput: FindUserInput!): User!
   weddings(paginationInput: PaginationInput = {limit: 10, page: 1}): PaginatedWedding!
-  wedding(id: String!): Wedding!
-  guest(id: Int!): Guest!
+  wedding(id: String, code: Int): Wedding!
+  guests(paginationInput: PaginationInput!): PaginatedGuest!
+  guest(id: String!): Guest!
   media(id: Int!): Media!
   album(id: Int!): Album!
 }
@@ -130,21 +154,17 @@ input FindUserInput {
   id: String!
 }
 
-input PaginationInput {
-  limit: Int! = 10
-  page: Int! = 1
-}
-
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
   createWedding(createWeddingInput: CreateWeddingInput!): Wedding!
+  uploadImage(uploadWeddingImageInput: UploadWeddingImageInput!): Wedding!
   updateWedding(updateWeddingInput: UpdateWeddingInput!): Wedding!
   removeWedding(id: String!): Wedding!
   createGuest(createGuestInput: CreateGuestInput!): Guest!
   updateGuest(updateGuestInput: UpdateGuestInput!): Guest!
-  removeGuest(id: Int!): Guest!
+  removeGuest(id: String!): Guest!
   createMedia(createMediaInput: CreateMediaInput!): Media!
   updateMedia(updateMediaInput: UpdateMediaInput!): Media!
   removeMedia(id: Int!): Media!
@@ -180,6 +200,20 @@ input CreateWeddingInput {
   date: String!
 }
 
+input UploadWeddingImageInput {
+  weddingId: String!
+  for: ImageFor!
+  image: Upload!
+}
+
+enum ImageFor {
+  BRIDE
+  GROOM
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 input UpdateWeddingInput {
   title: String
   description: String
@@ -192,14 +226,13 @@ input UpdateWeddingInput {
 }
 
 input CreateGuestInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  weddingId: String!
 }
 
 input UpdateGuestInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  role: GuestRole = GUEST
+  weddingId: String
+  id: String!
 }
 
 input CreateMediaInput {

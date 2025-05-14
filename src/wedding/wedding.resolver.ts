@@ -1,13 +1,15 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ResolveField, Parent, Int } from '@nestjs/graphql';
 import { WeddingService } from './wedding.service';
 import { CreateWeddingInput } from './dto/create-wedding.input';
 import { UpdateWeddingInput } from './dto/update-wedding.input';
 import { User, Wedding } from '@app/entities';
 import { CurrentUser } from '@app/decorators';
-import { UseGuards } from '@nestjs/common';
+import { BadRequestException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@app/guards';
 import { PaginatedWedding } from './dto/paginated-wedding.dto';
 import { PaginationInput } from '@app/dto';
+import { UploadWeddingImageInput } from './dto/upload-wedding-image.dto';
+import { PaginatedWeddingGuests } from './dto/paginated-wedding-guests.dto';
 
 @Resolver(() => Wedding)
 @UseGuards(AuthGuard)
@@ -25,8 +27,14 @@ export class WeddingResolver {
   }
 
   @Query(() => Wedding, { name: 'wedding' })
-  findOne(@Args('id') id: string) {
-    return this.weddingService.findOne(id);
+  async findOne(@Args('id', { nullable: true }) id?: string, @Args('code', { type: () => Int, nullable: true }) code?: number) {
+    if (!id && !code) throw new BadRequestException('Either "id" or "code" must be provided.');
+    return id ? await this.weddingService.findOneBy({ id }) : await this.weddingService.findOneBy({ code });
+  }
+
+  @Mutation(() => Wedding, { name: 'uploadImage' })
+  async uploadImage(@Args('uploadWeddingImageInput') uploadData: UploadWeddingImageInput, @CurrentUser() user: User) {
+    return await this.weddingService.uploadImage(uploadData, user);
   }
 
   @Mutation(() => Wedding)
@@ -37,5 +45,13 @@ export class WeddingResolver {
   @Mutation(() => Wedding)
   removeWedding(@Args('id') id: string) {
     return this.weddingService.remove(id);
+  }
+
+  @ResolveField(() => PaginatedWeddingGuests, { name: 'guests' })
+  async guests(
+    @Args('paginationInput', { nullable: true, defaultValue: { limit: 10, page: 1 } }) paginationInput: PaginationInput,
+    @Parent() wedding: Wedding,
+  ) {
+    return await this.weddingService.resolveGuests(paginationInput, wedding.id);
   }
 }

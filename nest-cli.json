@@ -7,6 +7,15 @@
     "webpack": true
   },
   "projects": {
+    "application-modules": {
+      "type": "library",
+      "root": "libs/application-modules",
+      "entryFile": "index",
+      "sourceRoot": "libs/application-modules/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/application-modules/tsconfig.lib.json"
+      }
+    },
     "database": {
       "type": "library",
       "root": "libs/database",
