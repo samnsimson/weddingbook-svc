@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-import { BadRequestException, forwardRef, Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateWeddingInput } from './dto/create-wedding.input';
 import { UpdateWeddingInput } from './dto/update-wedding.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,26 +8,19 @@ import { generateCode } from '@app/utils';
 import { PaginatedWedding } from './dto/paginated-wedding.dto';
 import { PaginationInput } from '@app/dto';
 import { UploadWeddingImageInput } from './dto/upload-wedding-image.dto';
-import { ConfigService } from '@nestjs/config';
 import { GuestRole, ImageFor } from '@app/types';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { Readable } from 'stream';
 import { GuestService } from 'src/guest/guest.service';
+import { FileStorageService } from 'src/file-storage/file-storage.service';
 
 @Injectable()
 export class WeddingService {
-  private readonly s3: S3Client;
   private readonly logger: Logger;
 
   constructor(
     @InjectRepository(Wedding) private readonly weddingRepository: Repository<Wedding>,
     @Inject(forwardRef(() => GuestService)) private readonly guestService: GuestService,
-    private readonly configService: ConfigService,
+    private readonly fileStorageService: FileStorageService,
   ) {
-    const awsRegion = this.configService.getOrThrow<string>('AWS_REGION');
-    const accessKeyId = this.configService.getOrThrow<string>('AWS_ACCESS_KEY_ID');
-    const secretAccessKey = this.configService.getOrThrow<string>('AWS_SECRET_ACCESS_KEY');
-    this.s3 = new S3Client({ region: awsRegion, credentials: { accessKeyId, secretAccessKey } });
     this.logger = new Logger(WeddingService.name);
   }
 
@@ -76,33 +68,10 @@ export class WeddingService {
   async uploadImage(uploadData: UploadWeddingImageInput, user: User) {
     this.logger.log(`Begining upload image process for ${uploadData.for}`);
     const { weddingId, image: file, for: imageFor } = uploadData;
-    const { createReadStream, filename, mimetype } = await file;
-    if (!mimetype.startsWith('image/')) throw new BadRequestException('Only image files are allowed');
-    const fileExt = filename.split('.').pop();
-    const key = `weddings/${weddingId}/${Date.now()}.${fileExt}`;
-    this.logger.log(`Image path: ${key}`);
-    const uploadResult = await this.uploadToS3(createReadStream(), key, mimetype);
+    const uploadResult = await this.fileStorageService.uploadImage(file);
     const imageData = imageFor === ImageFor.BRIDE ? { brideImageUrl: uploadResult.location } : { groomImageUrl: uploadResult.location };
     this.logger.log(`Image data: ${JSON.stringify(imageData)}`);
     return await this.weddingRepository.update({ id: weddingId, owner: { id: user.id } }, imageData);
-  }
-
-  private async uploadToS3(stream: Readable, key: string, contentType: string) {
-    const Key = key;
-    const Body = stream;
-    const ContentType = contentType;
-    const ACL = 'public-read';
-    const Bucket = this.configService.getOrThrow('AWS_S3_BUCKET_NAME');
-    const command = new PutObjectCommand({ Bucket, Key, Body, ContentType, ACL });
-    this.logger.log(`PutObjectCommand: ${JSON.stringify(command)}`);
-    try {
-      await this.s3.send(command);
-      const location = `https://${Bucket}.s3.amazonaws.com/${key}`;
-      this.logger.log(`Image url: ${location}`);
-      return { location };
-    } catch (error) {
-      throw new InternalServerErrorException(`Failed to upload image to S3: ${error.message}`);
-    }
   }
 
   async resolveGuests({ limit = 10, page = 1 }: PaginationInput, weddingId: string) {

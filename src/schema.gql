@@ -39,19 +39,36 @@ type Comment {
   mediaItem: Media!
 }
 
+type Post {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  description: String
+  wedding: Wedding!
+  user: User!
+  media: [Media!]!
+}
+
 type Media {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
   url: String!
-  mediaType: String!
+  mediaType: MediaType!
   caption: String
   uploadedBy: User!
   wedding: Wedding!
+  post: Post
   album: Album
   reactions: [MediaReaction!]!
   comments: [Comment!]!
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
 }
 
 type Wedding {
@@ -68,6 +85,7 @@ type Wedding {
   brideImageUrl: String
   groomImageUrl: String
   owner: User!
+  posts: [Post!]!
   mediaItems: [Media!]!
   albums: [Album!]!
   guests(paginationInput: PaginationInput = {limit: 10, page: 1}): PaginatedWeddingGuests!
@@ -109,6 +127,7 @@ type User {
   isActive: Boolean!
   guestConnections: [Guest!]!
   wedding: Wedding!
+  posts: [Post!]
   fullName: String!
 }
 
@@ -236,14 +255,32 @@ input UpdateGuestInput {
 }
 
 input CreateMediaInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Image or video file to upload"""
+  file: [Upload!]!
+
+  """Optional caption for the media"""
+  caption: String
+
+  """PHOTO or VIDEO"""
+  mediaType: MediaType!
+
+  """Associated wedding ID"""
+  weddingId: String!
 }
 
 input UpdateMediaInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  """Image or video file to upload"""
+  file: [Upload!]
+
+  """Optional caption for the media"""
+  caption: String
+
+  """PHOTO or VIDEO"""
+  mediaType: MediaType
+
+  """Associated wedding ID"""
+  weddingId: String
+  id: String!
 }
 
 input CreateAlbumInput {

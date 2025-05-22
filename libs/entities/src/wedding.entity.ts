@@ -5,6 +5,7 @@ import { User } from './user.entity';
 import { Guest } from './guest.entity';
 import { Media } from './media.entity';
 import { Album } from './album.entity';
+import { Post } from './post.entity';
 
 @Entity()
 @ObjectType()
@@ -46,6 +47,10 @@ export class Wedding extends EntityBase {
   @JoinColumn()
   @Field(() => User)
   owner: User;
+
+  @OneToMany(() => Post, (post) => post.wedding, { eager: true })
+  @Field(() => [Post], { defaultValue: [] })
+  posts: Post[];
 
   @OneToMany(() => Guest, (guest) => guest.wedding, { eager: true })
   guests: Guest[];

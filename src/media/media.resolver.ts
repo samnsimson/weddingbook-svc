@@ -2,24 +2,26 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { MediaService } from './media.service';
 import { CreateMediaInput } from './dto/create-media.input';
 import { UpdateMediaInput } from './dto/update-media.input';
-import { Media } from '@app/entities';
+import { Media, User } from '@app/entities';
+import { CurrentUser } from '@app/decorators';
+import { FindAllMediaInput } from './dto/fina-all-media.dto';
 
 @Resolver(() => Media)
 export class MediaResolver {
   constructor(private readonly mediaService: MediaService) {}
 
   @Mutation(() => Media)
-  createMedia(@Args('createMediaInput') createMediaInput: CreateMediaInput) {
-    return this.mediaService.create(createMediaInput);
+  createMedia(@Args('createMediaInput') createMediaInput: CreateMediaInput, @CurrentUser() user: User) {
+    return this.mediaService.create(createMediaInput, user);
   }
 
   @Query(() => [Media], { name: 'media' })
-  findAll() {
-    return this.mediaService.findAll();
+  findAll(@Args('findAllMediaInput') { weddingId, ...pagination }: FindAllMediaInput) {
+    return this.mediaService.findAll(weddingId, pagination);
   }
 
   @Query(() => Media, { name: 'media' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => Int }) id: string) {
     return this.mediaService.findOne(id);
   }
 
@@ -29,7 +31,7 @@ export class MediaResolver {
   }
 
   @Mutation(() => Media)
-  removeMedia(@Args('id', { type: () => Int }) id: number) {
+  removeMedia(@Args('id', { type: () => Int }) id: string) {
     return this.mediaService.remove(id);
   }
 }

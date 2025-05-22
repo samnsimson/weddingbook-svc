@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany, OneToOne, Unique } from 'typeorm';
 import { EntityBase } from './base.entity';
 import { Guest } from './guest.entity';
 import { Wedding } from './wedding.entity';
+import { Post } from './post.entity';
 
 @Entity()
 @ObjectType()
@@ -52,4 +53,8 @@ export class User extends EntityBase {
   @OneToOne(() => Wedding, (wedding) => wedding.owner, { nullable: true })
   @Field(() => Wedding)
   wedding: Wedding;
+
+  @OneToMany(() => Post, (post) => post.user)
+  @Field(() => [Post], { nullable: true, defaultValue: [] })
+  posts: Post[];
 }

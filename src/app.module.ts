@@ -12,6 +12,7 @@ import { AlbumModule } from './album/album.module';
 import { AuthModule } from './auth/auth.module';
 import { RequestProcessorMiddleware } from '@app/middlewares';
 import { graphqlUploadExpress } from 'graphql-upload-ts';
+import { FileStorageModule } from './file-storage/file-storage.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { graphqlUploadExpress } from 'graphql-upload-ts';
     forwardRef(() => MediaModule),
     forwardRef(() => AlbumModule),
     forwardRef(() => AuthModule),
+    FileStorageModule,
   ],
   controllers: [],
   providers: [],

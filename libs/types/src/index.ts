@@ -21,3 +21,8 @@ export enum GuestRole {
   GUEST = 'GUEST',
   PHOTOGRAPHER = 'PHOTOGRAPHER',
 }
+
+export enum MediaType {
+  IMAGE = 'image',
+  VIDEO = 'video',
+}
