@@ -31,11 +31,9 @@ import { PostModule } from './post/post.module';
     forwardRef(() => MediaModule),
     forwardRef(() => AlbumModule),
     forwardRef(() => AuthModule),
-    FileStorageModule,
-    PostModule,
+    forwardRef(() => FileStorageModule),
+    forwardRef(() => PostModule),
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
