@@ -88,7 +88,7 @@ type Wedding {
   posts: [Post!]!
   mediaItems: [Media!]!
   albums: [Album!]!
-  guests(paginationInput: PaginationInput = {limit: 10, page: 1}): PaginatedWeddingGuests!
+  guests(paginationInput: PaginationInput): PaginatedWeddingGuests!
 }
 
 input PaginationInput {

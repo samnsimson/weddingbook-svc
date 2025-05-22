@@ -23,6 +23,6 @@ export class Post extends EntityBase {
   user: User;
 
   @Field(() => [Media], { defaultValue: [] })
-  @OneToMany(() => Media, (media) => media.post, { cascade: true })
+  @OneToMany(() => Media, (media) => media.post, { eager: true, cascade: true })
   media: Media[];
 }

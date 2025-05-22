@@ -48,10 +48,7 @@ export class WeddingResolver {
   }
 
   @ResolveField(() => PaginatedWeddingGuests, { name: 'guests' })
-  async guests(
-    @Args('paginationInput', { nullable: true, defaultValue: { limit: 10, page: 1 } }) paginationInput: PaginationInput,
-    @Parent() wedding: Wedding,
-  ) {
+  async guests(@Args('paginationInput', { nullable: true }) paginationInput: PaginationInput, @Parent() wedding: Wedding) {
     return await this.weddingService.resolveGuests(paginationInput, wedding.id);
   }
 }
