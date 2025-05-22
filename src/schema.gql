@@ -44,7 +44,7 @@ type Post {
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
-  description: String
+  caption: String
   wedding: Wedding!
   user: User!
   media: [Media!]!
@@ -92,8 +92,8 @@ type Wedding {
 }
 
 input PaginationInput {
-  limit: Int! = 10
-  page: Int! = 1
+  limit: Int = 10
+  page: Int = 1
 }
 
 type Guest {
@@ -158,19 +158,41 @@ type LoginEntity {
   refreshToken: String!
 }
 
+type PaginatedPostResponse {
+  total: Int!
+  limit: Int!
+  page: Int!
+  data: [Post!]!
+}
+
 type Query {
   users: [User!]!
   user(findUserInput: FindUserInput!): User!
-  weddings(paginationInput: PaginationInput = {limit: 10, page: 1}): PaginatedWedding!
+  weddings(paginationInput: PaginationInput): PaginatedWedding!
   wedding(id: String, code: Int): Wedding!
-  guests(paginationInput: PaginationInput!): PaginatedGuest!
+  guests(paginationInput: PaginationInput): PaginatedGuest!
   guest(id: String!): Guest!
+  medias(findAllMediaInput: FindAllMediaInput!): [Media!]!
   media(id: Int!): Media!
   album(id: Int!): Album!
+  posts(findAllPostInput: FindAllPostsInput!): PaginatedPostResponse!
+  post(id: String!): Post!
 }
 
 input FindUserInput {
   id: String!
+}
+
+input FindAllMediaInput {
+  limit: Int = 10
+  page: Int = 1
+  weddingId: String!
+}
+
+input FindAllPostsInput {
+  limit: Int = 10
+  page: Int = 1
+  weddingId: String!
 }
 
 type Mutation {
@@ -192,6 +214,9 @@ type Mutation {
   removeAlbum(id: Int!): Album!
   login(loginInput: LoginInput!): LoginEntity!
   signup(signupInput: SignupInput!): User!
+  createPost(createPostInput: CreatePostInput!): Post!
+  updatePost(updatePostInput: UpdatePostInput!): Post!
+  removePost(id: String!): Post!
 }
 
 input CreateUserInput {
@@ -261,7 +286,7 @@ input CreateMediaInput {
   """Optional caption for the media"""
   caption: String
 
-  """PHOTO or VIDEO"""
+  """Type of media (image or video)"""
   mediaType: MediaType!
 
   """Associated wedding ID"""
@@ -275,7 +300,7 @@ input UpdateMediaInput {
   """Optional caption for the media"""
   caption: String
 
-  """PHOTO or VIDEO"""
+  """Type of media (image or video)"""
   mediaType: MediaType
 
   """Associated wedding ID"""
@@ -306,4 +331,29 @@ input SignupInput {
   email: String!
   phone: String!
   password: String!
+}
+
+input CreatePostInput {
+  caption: String = null
+  weddingId: String!
+
+  """Image or video file to upload"""
+  media: MediaInput!
+}
+
+input MediaInput {
+  """Image or video file to upload"""
+  file: [Upload!]!
+
+  """Type of media (image or video)"""
+  mediaType: MediaType!
+}
+
+input UpdatePostInput {
+  caption: String = null
+  weddingId: String
+
+  """Image or video file to upload"""
+  media: MediaInput
+  id: Int!
 }

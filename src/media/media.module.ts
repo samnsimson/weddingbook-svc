@@ -9,5 +9,6 @@ import { FileStorageModule } from 'src/file-storage/file-storage.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Media]), forwardRef(() => WeddingModule), FileStorageModule],
   providers: [MediaResolver, MediaService],
+  exports: [MediaService],
 })
 export class MediaModule {}

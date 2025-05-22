@@ -5,9 +5,9 @@ export class PaginationResponse {
   @Field(() => Int)
   total: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { defaultValue: 10 })
   limit: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { defaultValue: 1 })
   page: number;
 }

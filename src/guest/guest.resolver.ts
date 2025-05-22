@@ -20,7 +20,7 @@ export class GuestResolver {
   }
 
   @Query(() => PaginatedGuest, { name: 'guests' })
-  findAll(@Args('paginationInput') paginationInput: PaginationInput) {
+  findAll(@Args('paginationInput', { nullable: true }) paginationInput: PaginationInput) {
     return this.guestService.findAll(paginationInput);
   }
 

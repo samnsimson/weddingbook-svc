@@ -10,7 +10,7 @@ import { Media } from './media.entity';
 export class Post extends EntityBase {
   @Column({ type: 'text', default: null, nullable: true })
   @Field({ nullable: true, defaultValue: null })
-  description?: string;
+  caption?: string;
 
   @Field(() => Wedding)
   @ManyToOne(() => Wedding, (wedding) => wedding.posts, { nullable: false, onDelete: 'CASCADE' })

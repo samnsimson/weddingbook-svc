@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileUpload } from 'graphql-upload-ts';
 import { Readable } from 'stream';
@@ -40,7 +40,7 @@ export class FileStorageService {
     const fileUploads = await files;
     const uploadPromises = fileUploads.map(async (file) => {
       const { createReadStream, filename, mimetype } = file;
-      if (!mimetype.startsWith('image/')) throw new InternalServerErrorException('Only image files are allowed');
+      if (!mimetype.startsWith('image/')) throw new UnprocessableEntityException('Only image files are allowed');
       const fileExt = filename.split('.').pop();
       const key = `images/${Date.now()}.${fileExt}`;
       this.logger.log(`Image path: ${key}`);
@@ -53,7 +53,7 @@ export class FileStorageService {
   async uploadImage(file: Promise<FileUpload>) {
     this.logger.log(`Uploading image...`);
     const { createReadStream, filename, mimetype } = await file;
-    if (!mimetype.startsWith('image/')) throw new InternalServerErrorException('Only image files are allowed');
+    if (!mimetype.startsWith('image/')) throw new UnprocessableEntityException('Only image files are allowed');
     const fileExt = filename.split('.').pop();
     const key = `images/${Date.now()}.${fileExt}`;
     this.logger.log(`Image path: ${key}`);
@@ -63,7 +63,7 @@ export class FileStorageService {
   async uploadVideo(file: Promise<FileUpload>) {
     this.logger.log(`Uploading video...`);
     const { createReadStream, filename, mimetype } = await file;
-    if (!mimetype.startsWith('video/')) throw new InternalServerErrorException('Only video files are allowed');
+    if (!mimetype.startsWith('video/')) throw new UnprocessableEntityException('Only video files are allowed');
     const fileExt = filename.split('.').pop();
     const key = `videos/${Date.now()}.${fileExt}`;
     this.logger.log(`Video path: ${key}`);

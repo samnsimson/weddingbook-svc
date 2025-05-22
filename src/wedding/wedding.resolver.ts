@@ -22,7 +22,7 @@ export class WeddingResolver {
   }
 
   @Query(() => PaginatedWedding, { name: 'weddings' })
-  findAll(@Args('paginationInput', { nullable: true, defaultValue: { limit: 10, page: 1 } }) paginationInput: PaginationInput) {
+  findAll(@Args('paginationInput', { nullable: true }) paginationInput: PaginationInput) {
     return this.weddingService.findAll(paginationInput);
   }
 

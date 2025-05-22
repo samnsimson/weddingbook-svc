@@ -5,8 +5,11 @@ import { UpdateMediaInput } from './dto/update-media.input';
 import { Media, User } from '@app/entities';
 import { CurrentUser } from '@app/decorators';
 import { FindAllMediaInput } from './dto/fina-all-media.dto';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@app/guards';
 
 @Resolver(() => Media)
+@UseGuards(AuthGuard)
 export class MediaResolver {
   constructor(private readonly mediaService: MediaService) {}
 
@@ -15,7 +18,7 @@ export class MediaResolver {
     return this.mediaService.create(createMediaInput, user);
   }
 
-  @Query(() => [Media], { name: 'media' })
+  @Query(() => [Media], { name: 'medias' })
   findAll(@Args('findAllMediaInput') { weddingId, ...pagination }: FindAllMediaInput) {
     return this.mediaService.findAll(weddingId, pagination);
   }
