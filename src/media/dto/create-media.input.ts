@@ -8,7 +8,7 @@ export class CreateMediaInput {
   @Field(() => [GraphQLUpload], { description: 'Image or video file to upload' })
   @IsArray()
   @IsNotEmpty({ each: true })
-  file: Promise<Array<FileUpload>>;
+  file: Array<Promise<FileUpload>>;
 
   @Field({ nullable: true, description: 'Optional caption for the media' })
   @IsOptional()

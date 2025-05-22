@@ -25,7 +25,7 @@ export class Media extends EntityBase {
   @Field({ nullable: true })
   caption?: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { eager: true })
   @Field(() => User)
   uploadedBy: User;
 

@@ -32,7 +32,7 @@ export class PostService {
     this.logger.log(`Finding all posts for wedding ${weddingId}. page: ${page}, limit: ${limit}`);
     const skip = limit * (page - 1);
     const where = { wedding: { id: weddingId } };
-    const relations = ['user', 'media'];
+    const relations = ['user', 'media', 'wedding'];
     const [posts, total] = await this.postRepository.findAndCount({ where, relations, take: limit, skip });
     return { limit, page, total, data: posts };
   }
@@ -47,7 +47,7 @@ export class PostService {
     this.logger.log(`Finding post with options ${JSON.stringify(options)}. page: ${page}, limit: ${limit}`);
     const skip = limit * (page - 1);
     const where = { ...options };
-    const relations = ['user', 'media'];
+    const relations = ['user', 'media', 'wedding'];
     const [posts, total] = await this.postRepository.findAndCount({ where, relations, take: limit, skip });
     return { limit, page, total, data: posts };
   }

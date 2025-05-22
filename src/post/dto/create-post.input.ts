@@ -1,5 +1,5 @@
 import { InputType, Field, OmitType } from '@nestjs/graphql';
-import { IsArray, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 import { CreateMediaInput } from 'src/media/dto/create-media.input';
 
 @InputType()
@@ -20,6 +20,5 @@ export class CreatePostInput {
 
   @Field(() => MediaInput, { description: 'Image or video file to upload' })
   @IsNotEmpty()
-  @IsArray()
   media: MediaInput;
 }

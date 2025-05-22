@@ -21,7 +21,7 @@ import { PostModule } from './post/post.module';
     DatabaseModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      csrfPrevention: true,
+      csrfPrevention: false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       graphiql: true,
     }),

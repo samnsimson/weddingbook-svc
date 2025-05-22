@@ -2,6 +2,7 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { randomUUID } from 'crypto';
 import { FileUpload } from 'graphql-upload-ts';
 import { Readable } from 'stream';
 
@@ -17,15 +18,23 @@ export class FileStorageService {
     this.s3 = new S3Client({ region: awsRegion, credentials: { accessKeyId, secretAccessKey } });
   }
 
-  private async uploadToS3(stream: Readable, key: string, contentType: string) {
-    const Key = key;
-    const Body = stream;
-    const ContentType = contentType;
-    const ACL = 'public-read';
-    const Bucket = this.configService.getOrThrow('AWS_S3_BUCKET_NAME');
-    const command = new PutObjectCommand({ Bucket, Key, Body, ContentType, ACL });
-    this.logger.log(`PutObjectCommand: ${JSON.stringify(command)}`);
+  private async streamToBuffer(stream: Readable) {
+    return new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+      stream.on('end', () => resolve(Buffer.concat(chunks)));
+      stream.on('error', (err) => reject(err));
+    });
+  }
+
+  private async uploadToS3(buffer: Buffer, key: string, contentType: string) {
     try {
+      const Key = key;
+      const Body = buffer;
+      const ContentType = contentType;
+      const ACL = 'public-read';
+      const Bucket = this.configService.getOrThrow('AWS_S3_BUCKET_NAME');
+      const command = new PutObjectCommand({ Bucket, Key, Body, ContentType, ACL });
       await this.s3.send(command);
       const location = `https://${Bucket}.s3.amazonaws.com/${key}`;
       this.logger.log(`Image url: ${location}`);
@@ -35,19 +44,9 @@ export class FileStorageService {
     }
   }
 
-  async uploadImages(files: Promise<FileUpload[]>) {
-    this.logger.log(`Uploading images...`);
-    const fileUploads = await files;
-    const uploadPromises = fileUploads.map(async (file) => {
-      const { createReadStream, filename, mimetype } = file;
-      if (!mimetype.startsWith('image/')) throw new UnprocessableEntityException('Only image files are allowed');
-      const fileExt = filename.split('.').pop();
-      const key = `images/${Date.now()}.${fileExt}`;
-      this.logger.log(`Image path: ${key}`);
-      return await this.uploadToS3(createReadStream(), key, mimetype);
-    });
-    const uploadResults = await Promise.all(uploadPromises);
-    return uploadResults.map((result) => result);
+  async uploadImages(files: Array<Promise<FileUpload>>) {
+    this.logger.log(`Bulk uploading images...`);
+    return await Promise.all(files.map(async (file) => await this.uploadImage(file)));
   }
 
   async uploadImage(file: Promise<FileUpload>) {
@@ -55,9 +54,10 @@ export class FileStorageService {
     const { createReadStream, filename, mimetype } = await file;
     if (!mimetype.startsWith('image/')) throw new UnprocessableEntityException('Only image files are allowed');
     const fileExt = filename.split('.').pop();
-    const key = `images/${Date.now()}.${fileExt}`;
+    const key = `images/${randomUUID()}.${fileExt}`;
     this.logger.log(`Image path: ${key}`);
-    return await this.uploadToS3(createReadStream(), key, mimetype);
+    const buffer = await this.streamToBuffer(createReadStream());
+    return await this.uploadToS3(buffer, key, mimetype);
   }
 
   async uploadVideo(file: Promise<FileUpload>) {
@@ -65,8 +65,9 @@ export class FileStorageService {
     const { createReadStream, filename, mimetype } = await file;
     if (!mimetype.startsWith('video/')) throw new UnprocessableEntityException('Only video files are allowed');
     const fileExt = filename.split('.').pop();
-    const key = `videos/${Date.now()}.${fileExt}`;
+    const key = `videos/${randomUUID()}.${fileExt}`;
     this.logger.log(`Video path: ${key}`);
-    return await this.uploadToS3(createReadStream(), key, mimetype);
+    const buffer = await this.streamToBuffer(createReadStream());
+    return await this.uploadToS3(buffer, key, mimetype);
   }
 }

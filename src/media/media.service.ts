@@ -25,7 +25,9 @@ export class MediaService {
 
   async findAll(weddingId: string, { page = 1, limit = 10 }: PaginationInput) {
     const skip = limit * (page - 1);
-    const [data, total] = await this.mediaRepository.findAndCount({ where: { wedding: { id: weddingId } }, take: limit, skip });
+    const relations = ['uploadedBy', 'wedding'];
+    const where = { wedding: { id: weddingId } };
+    const [data, total] = await this.mediaRepository.findAndCount({ where, relations, take: limit, skip });
     return { limit, page, total, data };
   }
 

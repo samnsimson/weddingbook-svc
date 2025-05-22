@@ -16,6 +16,7 @@ export class PostResolver {
 
   @Mutation(() => Post)
   createPost(@Args('createPostInput') createPostInput: CreatePostInput, @CurrentUser() user: User) {
+    console.log('🚀 ~ PostResolver ~ createPost ~ createPostInput:', createPostInput);
     return this.postService.create(createPostInput, user);
   }
 
