@@ -27,6 +27,8 @@
     "@app/guards/(.*)": "<rootDir>/../libs/guards/src/$1",
     "@app/middlewares": "<rootDir>/../libs/middlewares/src",
     "@app/middlewares/(.*)": "<rootDir>/../libs/middlewares/src/$1",
+    "@app/redis": "<rootDir>/../libs/redis/src",
+    "@app/redis/(.*)": "<rootDir>/../libs/redis/src/$1",
     "@app/types": "<rootDir>/../libs/types/src",
     "@app/types/(.*)": "<rootDir>/../libs/types/src/$1",
     "@app/utils": "<rootDir>/../libs/utils/src",

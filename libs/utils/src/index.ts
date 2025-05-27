@@ -15,3 +15,10 @@ export function getClientType(req: Request): ClientType {
   if (clientHeader.toLowerCase() === 'web') return ClientType.WEB;
   return ClientType.UNKNOWN;
 }
+
+export const exceptionFactory = (errors) => {
+  return errors.reduce((acc: Record<string, any>, error) => {
+    acc[error.property] = Object.values(error.constraints).join(', ');
+    return acc;
+  }, {});
+};

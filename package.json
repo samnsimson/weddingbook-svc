@@ -35,8 +35,10 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "graphql": "^16.11.0",
+    "graphql-redis-subscriptions": "^2.7.0",
     "graphql-upload": "^17.0.0",
     "graphql-upload-ts": "^2.1.2",
+    "ioredis": "^5.6.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.15.6",
@@ -104,6 +106,7 @@
       "^@app/exception-filters(|/.*)$": "<rootDir>/libs/exception-filters/src/$1",
       "^@app/guards(|/.*)$": "<rootDir>/libs/guards/src/$1",
       "^@app/middlewares(|/.*)$": "<rootDir>/libs/middlewares/src/$1",
+      "^@app/redis(|/.*)$": "<rootDir>/libs/redis/src/$1",
       "^@app/types(|/.*)$": "<rootDir>/libs/types/src/$1",
       "^@app/utils(|/.*)$": "<rootDir>/libs/utils/src/$1"
     }

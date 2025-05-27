@@ -14,6 +14,7 @@ import { RequestProcessorMiddleware } from '@app/middlewares';
 import { graphqlUploadExpress } from 'graphql-upload-ts';
 import { FileStorageModule } from './file-storage/file-storage.module';
 import { PostModule } from './post/post.module';
+import { TokenService } from './token/token.service';
 
 @Module({
   imports: [
@@ -23,7 +24,10 @@ import { PostModule } from './post/post.module';
       driver: ApolloDriver,
       csrfPrevention: false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      installSubscriptionHandlers: true,
+      sortSchema: true,
       graphiql: true,
+      subscriptions: { 'graphql-ws': true, 'subscriptions-transport-ws': true },
     }),
     forwardRef(() => UserModule),
     forwardRef(() => WeddingModule),
@@ -34,6 +38,7 @@ import { PostModule } from './post/post.module';
     forwardRef(() => FileStorageModule),
     forwardRef(() => PostModule),
   ],
+  providers: [TokenService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
