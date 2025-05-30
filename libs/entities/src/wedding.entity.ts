@@ -6,6 +6,7 @@ import { Guest } from './guest.entity';
 import { Media } from './media.entity';
 import { Album } from './album.entity';
 import { Post } from './post.entity';
+import { Transform } from 'class-transformer';
 
 @Entity()
 @ObjectType()
@@ -25,6 +26,7 @@ export class Wedding extends EntityBase {
 
   @Column({ type: 'timestamptz' })
   @Field()
+  @Transform(({ value }) => value?.toISOString(), { toPlainOnly: true })
   date: Date;
 
   @Column({ nullable: true, default: null })

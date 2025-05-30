@@ -6,6 +6,7 @@ import { User } from '@app/entities';
 import { FindUserInput } from './dto/fina-user.input';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@app/guards';
+import { CurrentUser } from '@app/decorators';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -25,6 +26,12 @@ export class UserResolver {
   @Query(() => User, { name: 'user' })
   @UseGuards(AuthGuard)
   findOne(@Args('findUserInput') { id }: FindUserInput) {
+    return this.userService.findOne(id);
+  }
+
+  @Query(() => User, { name: 'currentUser' })
+  @UseGuards(AuthGuard)
+  findCurrentUser(@CurrentUser('id') id: string) {
     return this.userService.findOne(id);
   }
 

@@ -26,6 +26,11 @@ export class WeddingResolver {
     return this.weddingService.findAll(paginationInput);
   }
 
+  @Query(() => PaginatedWedding, { name: 'myWeddings' })
+  findMyWedding(@Args('paginationInput', { nullable: true }) paginationInput: PaginationInput, @CurrentUser('id') id: string) {
+    return this.weddingService.findBy({ guests: { user: { id } } }, paginationInput);
+  }
+
   @Query(() => Wedding, { name: 'wedding' })
   async findOne(@Args('id', { nullable: true }) id?: string, @Args('code', { type: () => Int, nullable: true }) code?: number) {
     if (!id && !code) throw new BadRequestException('Either "id" or "code" must be provided.');

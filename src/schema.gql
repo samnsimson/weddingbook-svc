@@ -171,6 +171,7 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   createWedding(createWeddingInput: CreateWeddingInput!): Wedding!
   login(loginInput: LoginInput!): LoginEntity!
+  refreshToken(refreshTokenInput: RefreshTokenInput!): RefreshResponse!
   removeAlbum(id: Int!): Album!
   removeGuest(id: String!): Guest!
   removeMedia(id: Int!): Media!
@@ -232,16 +233,27 @@ type Post {
 
 type Query {
   album(id: Int!): Album!
+  currentUser: User!
   guest(id: String!): Guest!
   guests(paginationInput: PaginationInput): PaginatedGuest!
   media(id: Int!): Media!
   medias(findAllMediaInput: FindAllMediaInput!): [Media!]!
+  myWeddings(paginationInput: PaginationInput): PaginatedWedding!
   post(id: String!): Post!
   posts(findAllPostInput: FindAllPostsInput!): PaginatedPostResponse!
   user(findUserInput: FindUserInput!): User!
   users: [User!]!
   wedding(code: Int, id: String): Wedding!
   weddings(paginationInput: PaginationInput): PaginatedWedding!
+}
+
+type RefreshResponse {
+  accessToken: String!
+  tokenType: String!
+}
+
+input RefreshTokenInput {
+  refreshToken: String!
 }
 
 input SignupInput {

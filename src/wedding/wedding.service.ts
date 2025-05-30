@@ -37,6 +37,12 @@ export class WeddingService {
     return { limit, page, total, data };
   }
 
+  async findBy(options: FindOptionsWhere<Wedding>, { limit = 10, page = 1 }: PaginationInput) {
+    const skip = limit * (page - 1);
+    const [data, total] = await this.weddingRepository.findAndCount({ where: options, take: limit, skip, order: { date: 'ASC' } });
+    return { limit, page, total, data };
+  }
+
   async findOne(id: string) {
     this.logger.log(`Finding wedding by id: ${id}`);
     const wedding = await this.weddingRepository.findOneBy({ id });

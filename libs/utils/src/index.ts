@@ -2,6 +2,7 @@ import { ClientType } from '@app/types';
 import { BadRequestException } from '@nestjs/common';
 import { isArray } from 'class-validator';
 import { Request } from 'express';
+import { GraphQLError } from 'graphql';
 
 export const generateCode = (): number => {
   return Math.floor(100000 + Math.random() * 900000);
@@ -17,8 +18,13 @@ export function getClientType(req: Request): ClientType {
 }
 
 export const exceptionFactory = (errors) => {
-  return errors.reduce((acc: Record<string, any>, error) => {
-    acc[error.property] = Object.values(error.constraints).join(', ');
-    return acc;
-  }, {});
+  throw new GraphQLError('Validation failed', {
+    extensions: {
+      code: 'BAD_USER_INPUT',
+      error: errors.reduce((acc: Record<string, any>, error) => {
+        acc[error.property] = Object.values(error.constraints).join(', ');
+        return acc;
+      }, {}),
+    },
+  });
 };

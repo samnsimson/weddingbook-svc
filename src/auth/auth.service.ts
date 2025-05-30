@@ -8,6 +8,7 @@ import { compare } from 'bcrypt';
 import { LoginEntity } from './entities/login.entity';
 import { SignupInput } from './dto/signup.input';
 import { User } from '@app/entities';
+import { RefreshTokenInput } from './dto/refresh.input';
 
 @Injectable()
 export class AuthService {
@@ -42,6 +43,19 @@ export class AuthService {
       return user;
     } catch (error) {
       this.logger.error(`Signup Error: ${JSON.stringify(error.response)}`);
+      throw error;
+    }
+  }
+
+  async refreshToken({ refreshToken }: RefreshTokenInput) {
+    try {
+      const refreshSecret = this.configService.get<string>('JWT_REFRESH_SECRET');
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(refreshToken, { secret: refreshSecret });
+      const { id, email } = await this.validateUser(payload);
+      const { tokenType, accessToken } = await this.generateToken({ sub: id, id, email, role: 'guest' });
+      return { tokenType, accessToken };
+    } catch (error) {
+      this.logger.error(`Refresh token error: ${JSON.stringify(error.response)}`);
       throw error;
     }
   }
