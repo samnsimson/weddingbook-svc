@@ -1,4 +1,5 @@
-import { Album, Comment, Guest, Media, MediaReaction, User, Wedding } from '@app/entities';
+import { Album, Comment, Guest, Media, MediaReaction, User } from '@app/entities';
+import { Event } from '@app/entities/event.entity';
 import { Post } from '@app/entities/post.entity';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -16,7 +17,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
         username: configService.get<string>('DB_USERNAME', 'admin'),
         password: configService.get<string>('DB_PASSWORD', 'password'),
         database: configService.get<string>('DB_NAME', 'db'),
-        entities: [User, Album, Guest, Comment, MediaReaction, Media, Wedding, Post],
+        entities: [User, Album, Guest, Comment, MediaReaction, Media, Post, Event],
         namingStrategy: new SnakeNamingStrategy(),
         autoLoadEntities: true,
         synchronize: true,

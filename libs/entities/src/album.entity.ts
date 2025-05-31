@@ -1,9 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { EntityBase } from './base.entity';
-import { Wedding } from './wedding.entity';
 import { User } from './user.entity';
 import { Media } from './media.entity';
+import { Event } from './event.entity';
 
 @Entity()
 @ObjectType()
@@ -16,9 +16,9 @@ export class Album extends EntityBase {
   @Field({ nullable: true })
   description?: string;
 
-  @ManyToOne(() => Wedding, (wedding) => wedding.albums)
-  @Field(() => Wedding)
-  wedding: Wedding;
+  @ManyToOne(() => Event, (event) => event.albums)
+  @Field(() => Event)
+  event: Event;
 
   @ManyToOne(() => User)
   @Field(() => User)

@@ -8,5 +8,5 @@ export class CreateGuestInput extends PickType(Guest, ['role']) {
   @IsString()
   @IsUUID()
   @IsNotEmpty()
-  weddingId: string;
+  eventId: string;
 }

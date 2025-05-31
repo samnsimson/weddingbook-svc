@@ -21,8 +21,8 @@ export class PostResolver {
   }
 
   @Query(() => PaginatedPostResponse, { name: 'posts' })
-  findAll(@Args('findAllPostInput') { weddingId, ...pagination }: FindAllPostsInput) {
-    return this.postService.findAll(weddingId, pagination);
+  findAll(@Args('findAllPostInput') { eventId, ...pagination }: FindAllPostsInput) {
+    return this.postService.findAll(eventId, pagination);
   }
 
   @Query(() => Post, { name: 'post' })

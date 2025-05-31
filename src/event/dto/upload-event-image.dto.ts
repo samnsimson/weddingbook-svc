@@ -5,7 +5,7 @@ import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 registerEnumType(ImageFor, { name: 'ImageFor' });
 
 @InputType()
-export class UploadWeddingImageInput {
+export class UploadEventImageInput {
   @Field()
   weddingId: string;
 

@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { LoginInput } from './dto/login.input';
 import { JwtPayload } from '@app/types';
@@ -38,6 +38,7 @@ export class AuthService {
 
   async signup(signupInput: SignupInput): Promise<User> {
     try {
+      if (signupInput.password !== signupInput.confirmPassword) throw new BadRequestException('Passwords do not match');
       this.logger.log(`New user signup: ${JSON.stringify(signupInput.email)}`);
       const user = await this.userService.create(signupInput);
       return user;

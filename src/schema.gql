@@ -6,12 +6,12 @@ type Album {
   createdAt: DateTime!
   deletedAt: DateTime
   description: String
+  event: Event!
   id: ID!
   mediaItems: [Media!]!
   owner: User!
   title: String!
   updatedAt: DateTime!
-  wedding: Wedding!
 }
 
 type Comment {
@@ -29,30 +29,36 @@ input CreateAlbumInput {
   exampleField: Int!
 }
 
+input CreateEventInput {
+  date: String!
+  description: String
+  title: String!
+}
+
 input CreateGuestInput {
-  weddingId: String!
+  eventId: String!
 }
 
 input CreateMediaInput {
   """Optional caption for the media"""
   caption: String
 
+  """Associated event ID"""
+  eventId: String!
+
   """Image or video file to upload"""
   file: [Upload!]!
 
   """Type of media (image or video)"""
   mediaType: MediaType!
-
-  """Associated wedding ID"""
-  weddingId: String!
 }
 
 input CreatePostInput {
   caption: String = null
+  eventId: String!
 
   """Image or video file to upload"""
   media: MediaInput!
-  weddingId: String!
 }
 
 input CreateUserInput {
@@ -64,27 +70,37 @@ input CreateUserInput {
   username: String!
 }
 
-input CreateWeddingInput {
-  date: String!
-  description: String
-  title: String!
-}
-
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
+type Event {
+  albums: [Album!]!
+  code: Int!
+  createdAt: DateTime!
+  date: DateTime!
+  deletedAt: DateTime
+  description: String
+  guests(paginationInput: PaginationInput): PaginatedEventGuests!
+  id: ID!
+  mediaItems: [Media!]!
+  owner: User!
+  posts: [Post!]!
+  title: String!
+  updatedAt: DateTime!
+}
+
 input FindAllMediaInput {
+  eventId: String!
   limit: Int = 10
   page: Int = 1
-  weddingId: String!
 }
 
 input FindAllPostsInput {
+  eventId: String!
   limit: Int = 10
   page: Int = 1
-  weddingId: String!
 }
 
 input FindUserInput {
@@ -94,22 +110,17 @@ input FindUserInput {
 type Guest {
   createdAt: DateTime!
   deletedAt: DateTime
+  event: Event!
   id: ID!
   role: GuestRole!
   updatedAt: DateTime!
   user: User!
-  wedding: Wedding!
 }
 
 enum GuestRole {
   ADMIN
   GUEST
   PHOTOGRAPHER
-}
-
-enum ImageFor {
-  BRIDE
-  GROOM
 }
 
 type LoginEntity {
@@ -130,6 +141,7 @@ type Media {
   comments: [Comment!]!
   createdAt: DateTime!
   deletedAt: DateTime
+  event: Event!
   id: ID!
   mediaType: MediaType!
   post: Post
@@ -137,7 +149,6 @@ type Media {
   updatedAt: DateTime!
   uploadedBy: User!
   url: String!
-  wedding: Wedding!
 }
 
 input MediaInput {
@@ -165,27 +176,40 @@ enum MediaType {
 
 type Mutation {
   createAlbum(createAlbumInput: CreateAlbumInput!): Album!
+  createEvent(createEventInput: CreateEventInput!): Event!
   createGuest(createGuestInput: CreateGuestInput!): Guest!
   createMedia(createMediaInput: CreateMediaInput!): Media!
   createPost(createPostInput: CreatePostInput!): Post!
   createUser(createUserInput: CreateUserInput!): User!
-  createWedding(createWeddingInput: CreateWeddingInput!): Wedding!
   login(loginInput: LoginInput!): LoginEntity!
   refreshToken(refreshTokenInput: RefreshTokenInput!): RefreshResponse!
   removeAlbum(id: Int!): Album!
+  removeEvent(id: String!): Event!
   removeGuest(id: String!): Guest!
   removeMedia(id: Int!): Media!
   removePost(id: String!): Post!
   removeUser(id: String!): User!
-  removeWedding(id: String!): Wedding!
   signup(signupInput: SignupInput!): User!
   updateAlbum(updateAlbumInput: UpdateAlbumInput!): Album!
+  updateEvent(updateEventInput: UpdateEventInput!): Event!
   updateGuest(updateGuestInput: UpdateGuestInput!): Guest!
   updateMedia(updateMediaInput: UpdateMediaInput!): Media!
   updatePost(updatePostInput: UpdatePostInput!): Post!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  updateWedding(updateWeddingInput: UpdateWeddingInput!): Wedding!
-  uploadImage(uploadWeddingImageInput: UploadWeddingImageInput!): Wedding!
+}
+
+type PaginatedEvent {
+  data: [Event!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+}
+
+type PaginatedEventGuests {
+  data: [User!]!
+  limit: Int!
+  page: Int!
+  total: Int!
 }
 
 type PaginatedGuest {
@@ -201,20 +225,6 @@ type PaginatedPostResponse {
   total: Int!
 }
 
-type PaginatedWedding {
-  data: [Wedding!]!
-  limit: Int!
-  page: Int!
-  total: Int!
-}
-
-type PaginatedWeddingGuests {
-  data: [User!]!
-  limit: Int!
-  page: Int!
-  total: Int!
-}
-
 input PaginationInput {
   limit: Int = 10
   page: Int = 1
@@ -224,11 +234,11 @@ type Post {
   caption: String
   createdAt: DateTime!
   deletedAt: DateTime
+  event: Event!
   id: ID!
   media: [Media!]!
   updatedAt: DateTime!
   user: User!
-  wedding: Wedding!
 }
 
 type Query {
@@ -238,13 +248,13 @@ type Query {
   guests(paginationInput: PaginationInput): PaginatedGuest!
   media(id: Int!): Media!
   medias(findAllMediaInput: FindAllMediaInput!): [Media!]!
-  myWeddings(paginationInput: PaginationInput): PaginatedWedding!
+  myEvents(paginationInput: PaginationInput): PaginatedEvent!
   post(id: String!): Post!
   posts(findAllPostInput: FindAllPostsInput!): PaginatedPostResponse!
   user(findUserInput: FindUserInput!): User!
   users: [User!]!
-  wedding(code: Int, id: String): Wedding!
-  weddings(paginationInput: PaginationInput): PaginatedWedding!
+  wedding(code: Int, id: String): Event!
+  weddings(paginationInput: PaginationInput): PaginatedEvent!
 }
 
 type RefreshResponse {
@@ -257,6 +267,7 @@ input RefreshTokenInput {
 }
 
 input SignupInput {
+  confirmPassword: String!
   email: String!
   firstName: String!
   lastName: String!
@@ -271,15 +282,29 @@ input UpdateAlbumInput {
   id: Int!
 }
 
+input UpdateEventInput {
+  brideImageUrl: String!
+  brideName: String!
+  date: String
+  description: String
+  groomImageUrl: String!
+  groomName: String!
+  id: String!
+  title: String
+}
+
 input UpdateGuestInput {
+  eventId: String
   id: String!
   role: GuestRole = GUEST
-  weddingId: String
 }
 
 input UpdateMediaInput {
   """Optional caption for the media"""
   caption: String
+
+  """Associated event ID"""
+  eventId: String
 
   """Image or video file to upload"""
   file: [Upload!]
@@ -287,18 +312,15 @@ input UpdateMediaInput {
 
   """Type of media (image or video)"""
   mediaType: MediaType
-
-  """Associated wedding ID"""
-  weddingId: String
 }
 
 input UpdatePostInput {
   caption: String = null
+  eventId: String
   id: Int!
 
   """Image or video file to upload"""
   media: MediaInput
-  weddingId: String
 }
 
 input UpdateUserInput {
@@ -311,30 +333,14 @@ input UpdateUserInput {
   username: String
 }
 
-input UpdateWeddingInput {
-  brideImageUrl: String!
-  brideName: String!
-  date: String
-  description: String
-  groomImageUrl: String!
-  groomName: String!
-  id: String!
-  title: String
-}
-
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
-
-input UploadWeddingImageInput {
-  for: ImageFor!
-  image: Upload!
-  weddingId: String!
-}
 
 type User {
   createdAt: DateTime!
   deletedAt: DateTime
   email: String!
+  events: [Event!]
   firstName: String!
   fullName: String!
   guestConnections: [Guest!]!
@@ -347,25 +353,4 @@ type User {
   posts: [Post!]
   updatedAt: DateTime!
   username: String!
-  wedding: Wedding!
-}
-
-type Wedding {
-  albums: [Album!]!
-  brideImageUrl: String
-  brideName: String
-  code: Int!
-  createdAt: DateTime!
-  date: DateTime!
-  deletedAt: DateTime
-  description: String
-  groomImageUrl: String
-  groomName: String
-  guests(paginationInput: PaginationInput): PaginatedWeddingGuests!
-  id: ID!
-  mediaItems: [Media!]!
-  owner: User!
-  posts: [Post!]!
-  title: String!
-  updatedAt: DateTime!
 }

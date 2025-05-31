@@ -8,5 +8,5 @@ export class FindAllPostsInput extends PaginationInput {
   @IsString()
   @IsNotEmpty()
   @IsUUID('4')
-  weddingId: string;
+  eventId: string;
 }

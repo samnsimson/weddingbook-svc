@@ -4,7 +4,7 @@ import { UpdateMediaInput } from './dto/update-media.input';
 import { Media, User } from '@app/entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { WeddingService } from 'src/wedding/wedding.service';
+import { EventService } from 'src/event/event.service';
 import { FileStorageService } from 'src/file-storage/file-storage.service';
 import { PaginationInput } from '@app/dto';
 
@@ -12,21 +12,21 @@ import { PaginationInput } from '@app/dto';
 export class MediaService {
   constructor(
     @InjectRepository(Media) private readonly mediaRepository: Repository<Media>,
-    @Inject(forwardRef(() => WeddingService)) private readonly weddingService: WeddingService,
+    @Inject(forwardRef(() => EventService)) private readonly eventService: EventService,
     private readonly fileStorageService: FileStorageService,
   ) {}
 
-  async create({ weddingId, file, mediaType }: CreateMediaInput, uploadedBy: User) {
-    const wedding = await this.weddingService.findOne(weddingId);
+  async create({ eventId, file, mediaType }: CreateMediaInput, uploadedBy: User) {
+    const event = await this.eventService.findOne(eventId);
     const fileData = await this.fileStorageService.uploadImages(file);
-    const medias = fileData.map(({ location: url }) => this.mediaRepository.create({ url, wedding, uploadedBy, mediaType }));
+    const medias = fileData.map(({ location: url }) => this.mediaRepository.create({ url, event, uploadedBy, mediaType }));
     return await this.mediaRepository.save(medias);
   }
 
-  async findAll(weddingId: string, { page = 1, limit = 10 }: PaginationInput) {
+  async findAll(eventId: string, { page = 1, limit = 10 }: PaginationInput) {
     const skip = limit * (page - 1);
-    const relations = ['uploadedBy', 'wedding'];
-    const where = { wedding: { id: weddingId } };
+    const relations = ['uploadedBy', 'event'];
+    const where = { event: { id: eventId } };
     const [data, total] = await this.mediaRepository.findAndCount({ where, relations, take: limit, skip });
     return { limit, page, total, data };
   }

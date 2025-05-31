@@ -2,12 +2,12 @@ import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { EntityBase } from './base.entity';
 import { User } from './user.entity';
-import { Wedding } from './wedding.entity';
 import { Album } from './album.entity';
 import { MediaReaction } from './media-reactions.entity';
 import { Comment } from './comments.entity';
 import { Post } from './post.entity';
 import { MediaType } from '@app/types';
+import { Event } from './event.entity';
 
 registerEnumType(MediaType, { name: 'MediaType' });
 @Entity()
@@ -29,9 +29,9 @@ export class Media extends EntityBase {
   @Field(() => User)
   uploadedBy: User;
 
-  @ManyToOne(() => Wedding, (wedding) => wedding.mediaItems)
-  @Field(() => Wedding)
-  wedding: Wedding;
+  @ManyToOne(() => Event, (event) => event.mediaItems)
+  @Field(() => Event)
+  event: Event;
 
   @ManyToOne(() => Post, (post) => post.media, { nullable: true })
   @Field(() => Post, { nullable: true })

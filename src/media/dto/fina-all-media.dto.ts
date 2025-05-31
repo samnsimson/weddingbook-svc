@@ -8,5 +8,5 @@ export class FindAllMediaInput extends PaginationInput {
   @IsString()
   @IsNotEmpty()
   @IsUUID()
-  weddingId: string;
+  eventId: string;
 }

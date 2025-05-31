@@ -4,6 +4,6 @@ export * from './comments.entity';
 export * from './guest.entity';
 export * from './media-reactions.entity';
 export * from './media.entity';
-export * from './wedding.entity';
+export * from './event.entity';
 export * from './post.entity';
 export * from './base.entity';

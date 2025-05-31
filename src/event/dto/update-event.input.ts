@@ -1,9 +1,9 @@
 import { IsOptional, IsString, IsUrl, IsUUID } from 'class-validator';
-import { CreateWeddingInput } from './create-wedding.input';
+import { CreateEventInput } from './create-event.input';
 import { InputType, Field, PartialType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateWeddingInput extends PartialType(CreateWeddingInput) {
+export class UpdateEventInput extends PartialType(CreateEventInput) {
   @IsUUID()
   @Field()
   id: string;

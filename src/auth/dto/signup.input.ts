@@ -32,4 +32,9 @@ export class SignupInput {
   @IsString()
   @IsStrongPassword()
   password: string;
+
+  @Field()
+  @IsString()
+  @IsStrongPassword()
+  confirmPassword: string;
 }

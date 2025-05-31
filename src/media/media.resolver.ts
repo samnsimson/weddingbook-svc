@@ -19,8 +19,8 @@ export class MediaResolver {
   }
 
   @Query(() => [Media], { name: 'medias' })
-  findAll(@Args('findAllMediaInput') { weddingId, ...pagination }: FindAllMediaInput) {
-    return this.mediaService.findAll(weddingId, pagination);
+  findAll(@Args('findAllMediaInput') { eventId, ...pagination }: FindAllMediaInput) {
+    return this.mediaService.findAll(eventId, pagination);
   }
 
   @Query(() => Media, { name: 'media' })

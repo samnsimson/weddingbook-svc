@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { Post, User } from '@app/entities';
-import { WeddingService } from 'src/wedding/wedding.service';
+import { EventService } from 'src/event/event.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { MediaService } from 'src/media/media.service';
@@ -15,24 +15,24 @@ export class PostService {
 
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
-    @Inject(forwardRef(() => WeddingService)) private readonly weddingService: WeddingService,
+    @Inject(forwardRef(() => EventService)) private readonly eventService: EventService,
     @Inject(forwardRef(() => MediaService)) private readonly mediaService: MediaService,
   ) {}
 
   async create(createPostInput: CreatePostInput, user: User) {
     this.logger.log('Creating post', createPostInput);
-    const { weddingId, caption, media } = createPostInput;
-    const wedding = await this.weddingService.findOne(weddingId);
-    const medias = await this.mediaService.create({ ...media, weddingId }, user);
-    const post = this.postRepository.create({ caption, wedding, user, media: medias });
+    const { eventId, caption, media } = createPostInput;
+    const event = await this.eventService.findOne(eventId);
+    const medias = await this.mediaService.create({ ...media, eventId }, user);
+    const post = this.postRepository.create({ caption, event, user, media: medias });
     return await this.postRepository.save(post);
   }
 
-  async findAll(weddingId: string, { page = 1, limit = 10 }: PaginationInput): Promise<PaginatedPostResponse> {
-    this.logger.log(`Finding all posts for wedding ${weddingId}. page: ${page}, limit: ${limit}`);
+  async findAll(eventId: string, { page = 1, limit = 10 }: PaginationInput): Promise<PaginatedPostResponse> {
+    this.logger.log(`Finding all posts for event ${eventId}. page: ${page}, limit: ${limit}`);
     const skip = limit * (page - 1);
-    const where = { wedding: { id: weddingId } };
-    const relations = ['user', 'media', 'wedding'];
+    const where = { event: { id: eventId } };
+    const relations = ['user', 'media', 'event'];
     const [posts, total] = await this.postRepository.findAndCount({ where, relations, take: limit, skip });
     return { limit, page, total, data: posts };
   }
@@ -47,7 +47,7 @@ export class PostService {
     this.logger.log(`Finding post with options ${JSON.stringify(options)}. page: ${page}, limit: ${limit}`);
     const skip = limit * (page - 1);
     const where = { ...options };
-    const relations = ['user', 'media', 'wedding'];
+    const relations = ['user', 'media', 'event'];
     const [posts, total] = await this.postRepository.findAndCount({ where, relations, take: limit, skip });
     return { limit, page, total, data: posts };
   }

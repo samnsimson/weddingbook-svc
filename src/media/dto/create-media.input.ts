@@ -19,8 +19,8 @@ export class CreateMediaInput {
   @IsEnum(MediaType)
   mediaType: MediaType;
 
-  @Field({ description: 'Associated wedding ID' })
+  @Field({ description: 'Associated event ID' })
   @IsString()
   @IsNotEmpty()
-  weddingId: string;
+  eventId: string;
 }
