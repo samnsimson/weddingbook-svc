@@ -23,7 +23,7 @@ export class PostService {
     this.logger.log('Creating post', createPostInput);
     const { eventId, caption, media } = createPostInput;
     const event = await this.eventService.findOne(eventId);
-    const medias = await this.mediaService.create({ ...media, eventId }, user);
+    const medias = media ? await this.mediaService.create({ ...media, eventId }, user) : [];
     const post = this.postRepository.create({ caption, event, user, media: medias });
     return await this.postRepository.save(post);
   }
@@ -33,7 +33,7 @@ export class PostService {
     const skip = limit * (page - 1);
     const where = { event: { id: eventId } };
     const relations = ['user', 'media', 'event'];
-    const [posts, total] = await this.postRepository.findAndCount({ where, relations, take: limit, skip });
+    const [posts, total] = await this.postRepository.findAndCount({ where, relations, take: limit, skip, order: { createdAt: 'DESC' } });
     return { limit, page, total, data: posts };
   }
 

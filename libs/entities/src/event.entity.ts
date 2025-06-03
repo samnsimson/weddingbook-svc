@@ -6,7 +6,6 @@ import { Guest } from './guest.entity';
 import { Media } from './media.entity';
 import { Album } from './album.entity';
 import { Post } from './post.entity';
-import { Transform } from 'class-transformer';
 
 @Entity()
 @ObjectType()
@@ -24,12 +23,19 @@ export class Event extends EntityBase {
   @Field({ nullable: true })
   description?: string;
 
-  @Field()
+  @Field(() => Date)
   @Column({ type: 'timestamptz' })
-  @Transform(({ value }) => value?.toISOString(), { toPlainOnly: true })
-  date: Date;
+  date: string;
 
-  @ManyToOne(() => User, (user) => user.events, { nullable: false, onDelete: 'SET NULL' })
+  @Column({ nullable: true, default: null })
+  @Field({ nullable: true, defaultValue: null })
+  venue: string;
+
+  @Column({ nullable: true, default: null })
+  @Field({ nullable: true, defaultValue: null })
+  address: string;
+
+  @ManyToOne(() => User, (user) => user.events, { eager: true, nullable: false, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'owner_id' })
   @Field(() => User)
   owner: User;

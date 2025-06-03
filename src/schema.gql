@@ -56,9 +56,7 @@ input CreateMediaInput {
 input CreatePostInput {
   caption: String = null
   eventId: String!
-
-  """Image or video file to upload"""
-  media: MediaInput!
+  media: MediaInput
 }
 
 input CreateUserInput {
@@ -76,6 +74,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Event {
+  address: String
   albums: [Album!]!
   code: Int!
   createdAt: DateTime!
@@ -89,6 +88,7 @@ type Event {
   posts: [Post!]!
   title: String!
   updatedAt: DateTime!
+  venue: String
 }
 
 input FindAllMediaInput {
@@ -101,6 +101,11 @@ input FindAllPostsInput {
   eventId: String!
   limit: Int = 10
   page: Int = 1
+}
+
+input FindEventInput {
+  code: Int
+  id: String
 }
 
 input FindUserInput {
@@ -120,6 +125,7 @@ type Guest {
 enum GuestRole {
   ADMIN
   GUEST
+  OWNER
   PHOTOGRAPHER
 }
 
@@ -244,6 +250,8 @@ type Post {
 type Query {
   album(id: Int!): Album!
   currentUser: User!
+  event(findEventInput: FindEventInput!): Event!
+  events(paginationInput: PaginationInput): PaginatedEvent!
   guest(id: String!): Guest!
   guests(paginationInput: PaginationInput): PaginatedGuest!
   media(id: Int!): Media!
@@ -253,8 +261,6 @@ type Query {
   posts(findAllPostInput: FindAllPostsInput!): PaginatedPostResponse!
   user(findUserInput: FindUserInput!): User!
   users: [User!]!
-  wedding(code: Int, id: String): Event!
-  weddings(paginationInput: PaginationInput): PaginatedEvent!
 }
 
 type RefreshResponse {
@@ -318,8 +324,6 @@ input UpdatePostInput {
   caption: String = null
   eventId: String
   id: Int!
-
-  """Image or video file to upload"""
   media: MediaInput
 }
 

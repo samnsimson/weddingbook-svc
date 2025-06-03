@@ -15,7 +15,7 @@ export class Guest extends EntityBase {
   @Field(() => User)
   user: User;
 
-  @ManyToOne(() => Event, (event) => event.guests)
+  @ManyToOne(() => Event, (event) => event.guests, { onDelete: 'CASCADE' })
   @Field(() => Event)
   event: Event;
 

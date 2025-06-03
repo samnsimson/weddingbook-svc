@@ -18,7 +18,8 @@ export class CreatePostInput {
   @IsUUID('4')
   eventId: string;
 
-  @Field(() => MediaInput, { description: 'Image or video file to upload' })
+  @Field(() => MediaInput, { nullable: true })
   @IsNotEmpty()
-  media: MediaInput;
+  @IsOptional()
+  media?: MediaInput;
 }

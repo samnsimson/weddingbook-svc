@@ -18,6 +18,7 @@ export enum ImageFor {
 
 export enum GuestRole {
   ADMIN = 'ADMIN',
+  OWNER = 'OWNER',
   GUEST = 'GUEST',
   PHOTOGRAPHER = 'PHOTOGRAPHER',
 }

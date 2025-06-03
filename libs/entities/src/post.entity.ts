@@ -13,7 +13,7 @@ export class Post extends EntityBase {
   caption?: string;
 
   @Field(() => Event)
-  @ManyToOne(() => Event, (event) => event.posts, { nullable: false, onDelete: 'SET NULL' })
+  @ManyToOne(() => Event, (event) => event.posts, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'event_id' })
   event: Event;
 
