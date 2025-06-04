@@ -7,7 +7,7 @@ import { IsArray, IsOptional, IsString, IsEnum, IsNotEmpty } from 'class-validat
 export class CreateMediaInput {
   @Field(() => [GraphQLUpload], { description: 'Image or video file to upload' })
   @IsArray()
-  @IsNotEmpty({ each: true })
+  // @IsNotEmpty({ each: true })
   file: Array<Promise<FileUpload>>;
 
   @Field({ nullable: true, description: 'Optional caption for the media' })
